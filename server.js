@@ -15,7 +15,10 @@ const typeDefs = `
   # TODO: create a CourseType type
   # with the same fields as before
   type CourseType {
-
+    id: ID!
+    name: String!
+    description: String
+    level: String
   }
 
   # TODO: create a StudentType type
@@ -23,31 +26,48 @@ const typeDefs = `
   # NOTE: think about what the courses
   # field should be
   type StudentType {
-
+    id: ID!
+    firstName: String!
+    lastName: String!
+    active: Boolean!
+    course: [CourseType]!
   }
 
   # TODO: create a CourseInput input type
   # with the same fields as before
   input CourseInput {
-
+    id: ID
+    name: String!
+    description: String
+    level: String
   }
 
   # TODO: create a CourseInput input type
   # with the same fields as before
   input StudentInput {
-
+    id: ID
+    firstName: String!
+    lastName: String!
+    active: Boolean!
+    coursesIds: [ID]!
   }
 
   # TODO: add the query fields we had before
   # so we can get all courses and all students
   type Query {
-
+    allStudents: [StudentType]
+    allCourses: [CourseType]
   }
 
   # TODO: add the mutation fields we had before
   # so we can get all courses and all students
   type Mutation {
-
+    createCourse(params: CourseInput): CourseType
+    updateCourse(params: CourseInput): CourseType
+    deleteCourse(params: ID): CourseType
+    createStudent(params: StudentInput): StudentType
+    updateStudent(params: StudentInput): StudentType
+    deleteStudent(params: ID): StudentType
   }
 `;
 
@@ -135,7 +155,7 @@ const resolvers = {
 
 // Use makeExecutableSchema to wire up
 // the type definitions and the resolvers
-const schema = ...;
+const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 app.use(
   '/graphql',
