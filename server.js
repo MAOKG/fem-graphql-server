@@ -55,47 +55,72 @@ const schema = new gql.GraphQLSchema({
       createCourse: {
         // TODO: Give the createCourse field a type
         // (hint: we already have this type)
-        type: ...,
+        type: CourseType,
         // TODO: Provide args for the createCourse field
-        args: { ... },
+        args: {
+          name: { type: new gql.GraphQLNonNull(gql.GraphQLString) },
+          description: { type: gql.GraphQLString },
+          level: { type: gql.GraphQLString }
+        },
         resolve(_, { name, description, level }) {
           // Push the input onto the COURSES array
           // and return the input
+          let id = COURSES.length + 1;
+          let newCourse = { id, name, description, level };
+          COURSES.push(newCourse);
+          return newCourse;
         }
       },
       updateCourse: {
         // TODO: Give the updateCourse field a type
         // (hint: we already have this type)
-        type: ...,
+        type: CourseType,
         // TODO: Provide args for the updateCourse field
-        args: { ... },
+        args: {
+          id: { type: new gql.GraphQLNonNull(gql.GraphQLID) },
+          name: { type: new gql.GraphQLNonNull(gql.GraphQLString) },
+          description: { type: gql.GraphQLString },
+          level: { type: gql.GraphQLString }
+        },
         resolve(_, { id, name, description, level }) {
           const input = { id, name, description, level };
           COURSES = COURSES.map(course => {
             // If the course ID matches the mapped
             // course, set it to the input
+            if (course.id === id) course = input;
+            return course;
           });
           // TODO: Return the modified course
+          return COURSES.find(course => course.id === id);
         }
       },
       deleteCourse: {
         // TODO: Give the deleteCourse field a type
         // (hint: we already have this type)
-        type: ...,
+        type: CourseType,
         // TODO: Provide args for the deleteCourse field
-        args: { ... },
+        args: { id: { type: new gql.GraphQLNonNull(gql.GraphQLID) } },
         resolve(_, { id }) {
           // TODO: find the course in the COURSES array by the id arg
           // and splice it out of the array.
           // If no course is found, return early
+          const course = COURSES.find(course => course.id === id);
+          if (!course) return;
+          const index = COURSES.indexOf(course);
+          COURSES.splice(index, 1);
+          return course;
         }
       },
       createStudent: {
         // TODO: Give the createStudent field a type
         // (hint: we already have this type)
-        type: ...,
+        type: StudentType,
         // TODO: Provide args for the createStudent field
-        args: { ... }
+        args: {
+          firstName: { type: new gql.GraphQLNonNull(gql.GraphQLString) },
+          lastName: { type: new gql.GraphQLNonNull(gql.GraphQLString) },
+          active: { type: new gql.GraphQLNonNull(gql.GraphQLBoolean) },
+          coursesIds: { type: new gql.GraphQLNonNull(new gql.GraphQLList(gql.GraphQLID)) }
         },
         resolve(_, { firstName, lastName, active, coursesIds }) {
           // Freebie!
@@ -122,9 +147,15 @@ const schema = new gql.GraphQLSchema({
       updateStudent: {
         // TODO: Give the updateStudent field a type
         // (hint: we already have this type)
-        type: ...,
+        type: StudentType,
         // TODO: Provide args for the updateStudent field
-        args: { ... },
+        args: {
+          id: { type: new gql.GraphQLNonNull(gql.GraphQLID) },
+          firstName: { type: new gql.GraphQLNonNull(gql.GraphQLString) },
+          lastName: { type: new gql.GraphQLNonNull(gql.GraphQLString) },
+          active: { type: new gql.GraphQLNonNull(gql.GraphQLBoolean) },
+          coursesIds: { type: new gql.GraphQLNonNull(new gql.GraphQLList(gql.GraphQLID)) }
+        },
         resolve(_, { id, firstName, lastName, active, coursesIds }) {
           // Freebie!
           let input = { id, firstName, lastName, active };
@@ -144,13 +175,20 @@ const schema = new gql.GraphQLSchema({
       deleteStudent: {
         // TODO: Give the deleteStudent field a type
         // (hint: we already have this type)
-        type: ...,
+        type: StudentType,
         // TODO: Provide args for the deleteStudent field
-        args: { ... },
+        args: {
+          id: { type: new gql.GraphQLNonNull(gql.GraphQLID) }
+        },
         resolve(_, { id }) {
           // TODO: find the student in the STUDENTS array by the id arg
           // and splice it out of the array.
           // If no student is found, return early
+          const stuent = STUDENTS.find(student => student.id === id);
+          if (!student) return;
+          const index = STUDENTS.indexOf(student);
+          STUDENTS.splice(index, 1);
+          return student;
         }
       }
     }
