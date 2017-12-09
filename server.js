@@ -82,33 +82,43 @@ const resolvers = {
   Query: {
     allCourses: () => {
       // TODO: Run a Mongo query to return all courses
+      return Promise.resolve(Course.find({}));
     },
     allStudents: () => {
       // TODO: Run a Mongo query to return all students
+      return Promise.resolve(Student.find({}).populate('courses'));
     }
   },
   Mutation: {
     createCourse: (_, { name, description, level }) => {
       // TODO: Run a Mongo query to save a new course
       const input = { name, description, level };
+      const newCourse = new Course(input);
+      return Promise.resolve(newCourse.save());
     },
     updateCourse: (_, { id, name, description, level }) => {
       // TODO: Run a Mongo query to update a course
       const input = { name, description, level };
+      return Promise.resolve(Course.findOneAndUpdate({ _id: id }, input, { new: true }));
     },
     deleteCourse: (_, { id }) => {
       // TODO: Run a Mongo query to delete a course
+      return Promise.resolve(Course.findOneAndRemove({ _id: id }));
     },
     createStudent: (_, { firstName, lastName, active, coursesIds }) => {
       // TODO: Run a Mongo query to create a student
       let input = { firstName, lastName, active, coursesIds };
+      const newStudent = new Student(input);
+      return Promise.resolve(newStudent.save());
     },
     updateStudent: (_, { id, firstName, lastName, active, coursesIds }) => {
       // TODO: Run a Mongo query to update a student
       let input = { firstName, lastName, active };
+      return Promise.resolve(Student.findOneAndUpdate({ _id: id }, input, { new: true }));
     },
     deleteStudent: (_, { id }) => {
       // TODO: Run a Mongo query to delete a student
+      return Promise.resolve(Student.findOneAndRemove({ _id: id }));
     }
   }
 };
